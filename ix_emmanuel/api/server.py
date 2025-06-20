@@ -1,8 +1,8 @@
 """
 IX-Emmanuel REST API Server
 
-Provides HTTP access to the mathematics and logic query processor.
-Enables communication with IX-Gibson orchestrator and external clients.
+Exposes HTTP endpoints for querying philosophical and psychological
+frameworks via the IX-Emmanuel reasoning engine.
 """
 
 from fastapi import FastAPI, HTTPException
@@ -11,20 +11,20 @@ import uvicorn
 from core.query_processor import IXEmmanuelQueryProcessor
 
 app = FastAPI()
-query_processor = IXEmmanuelQueryProcessor()
+query_engine = IXEmmanuelQueryProcessor()
 
 class QueryRequest(BaseModel):
     query: str
 
 @app.post("/query")
-async def handle_query(request: QueryRequest):
+async def process_query(request: QueryRequest):
     if not request.query or request.query.strip() == "":
-        raise HTTPException(status_code=400, detail="Query must not be empty.")
+        raise HTTPException(status_code=400, detail="Query cannot be empty.")
     try:
-        answer = query_processor.process_query(request.query)
-        return {"answer": answer}
+        result = query_engine.process_query(request.query)
+        return {"result": result}
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="127.0.0.1", port=8004)
+    uvicorn.run(app, host="127.0.0.1", port=8060)
