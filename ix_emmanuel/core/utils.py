@@ -1,35 +1,36 @@
 """
-IX-Emmanuel Utilities Module
+IX-Emmanuel Utility Functions
 
-Provides helper functions for input cleaning and basic validation of math/logic queries.
+Handles input normalization, semantic trimming,
+and philosophical query diagnostics.
 """
 
 import re
 
-def clean_query(query: str) -> str:
+def normalize_input(text: str) -> str:
     """
-    Normalize the query by trimming whitespace and removing excessive symbols.
+    Normalize philosophical query input by stripping
+    excess punctuation, whitespace, and casing.
     """
-    query = query.strip()
-    query = re.sub(r'\s+', ' ', query)
-    query = re.sub(r'[^\w\s\-\+\=\^\(\)\[\]]+', '', query)
-    return query
+    text = text.strip()
+    text = re.sub(r'\s+', ' ', text)
+    text = re.sub(r'[^\w\s\-]', '', text)
+    return text.lower()
 
-def is_valid_query(query: str) -> bool:
+def is_valid_philosophy_query(text: str) -> bool:
     """
-    Validate that the query appears meaningful.
+    Validate if the query resembles a philosophical question.
     """
-    return bool(query and len(query) > 3 and any(char.isalpha() for char in query))
+    return any(phrase in text for phrase in ["what is", "explain", "tell me about"]) and len(text) > 10
 
 # Example usage
 if __name__ == "__main__":
-    test_queries = [
-        "   What is derivative??   ",
-        "!?$%",
-        "mod",
-        "Explain lambda calculus!"
+    inputs = [
+        " What is consciousness? ",
+        "EXPLAIN free will!!!",
+        "yo",
+        "define stuff"
     ]
-    for q in test_queries:
-        cleaned = clean_query(q)
-        valid = is_valid_query(cleaned)
-        print(f"'{q}' → Cleaned: '{cleaned}' | Valid: {valid}")
+    for i in inputs:
+        clean = normalize_input(i)
+        print(f"Original: '{i}' → Cleaned: '{clean}' | Valid: {is_valid_philosophy_query(clean)}")
